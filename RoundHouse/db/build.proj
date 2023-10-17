@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="ApplyDatabaseChanges"
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="UserProperties.proj" Condition="Exists('UserProperties.proj')" />
+    <PropertyGroup Condition="!Exists('UserProperties.proj')">
+        <Environment>LOCAL</Environment>
+        <DBServer>FILT0027\SQLEXPRESS</DBServer>
+        <DBName>BlogsDemo</DBName>
+        <DBConnectionString>"Data Source=(local); Initial catalog=BlogsDemo;Integrated
+            security=true;MultipleActiveResultSets=True"</DBConnectionString>
+        <DBSqlFilesPath>.</DBSqlFilesPath>
+        <DBRestorePath>backup\Blogs.bak</DBRestorePath>
+        <DBRestoreOptions>"MOVE 'BlogsDemo' TO 'C:\Program Files\Microsoft SQL
+            Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\Vakuushallinta_DEMO.mdf', MOVE
+            'Vakuushallinta_log' TO 'C:\Program Files\Microsoft SQL
+            Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\Vakuushallinta_DEMO.ldf'"</DBRestoreOptions>
+        <LogPath>BlogsRoundhouseLog.txt</LogPath>
+    </PropertyGroup>
+
+    <Target Name="CreateDatabase">
+        <Exec
+            Command="..\Tools\rh.exe /d=$(DBName) /f=$(DBSqlFilesPath) /s=$(DBServer) /env=$(Environment) /outputpath=$(LogPath) /disableoutput=true /w" />
+    </Target>
+
+    <Target Name="ApplyDatabaseChanges">
+        <Exec
+            Command="..\Tools\rh.exe /d=$(DBName) /f=$(DBSqlFilesPath) /s=$(DBServer) /env=$(Environment) /outputpath=$(LogPath) /simple /disableoutput=true /w /ct=600" />
+    </Target>
+
+    <Target Name="DeleteDatabase">
+        <Exec
+            Command="..\Tools\rh.exe /d=$(DBName) /f=$(DBSqlFilesPath) /s=$(DBServer) /env=$(Environment) /outputpath=$(LogPath) /drop /disableoutput=true /w" />
+    </Target>
+
+    <Target Name="RebuildDatabase" DependsOnTargets="DeleteDatabase;CreateDatabase">
+    </Target>
+
+</Project>

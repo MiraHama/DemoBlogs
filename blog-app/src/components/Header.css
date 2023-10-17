@@ -1,0 +1,23 @@
+header {
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  background-color: rgb(216, 216, 216);
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+}
+
+.logo {
+  margin: auto 0;
+  text-decoration: none;
+}
+
+nav ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+}
+
+nav a {
+  text-decoration: none;
+}
